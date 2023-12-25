@@ -1,0 +1,53 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/jean
+    username: root
+    password: 1234
+
+  sql:
+    init:
+     mode: always
+     separator: $$
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: false
+
+    defer-datasource-initialization: true
+
+  servlet:
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 1000MB
+#
+#asciidoctor:
+#outputdir: doc
+#cloud:
+#aws:
+#credentials:
+#accessKey: AKIA4OQA4MOKPIVRBYKE
+#secretKey: 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
+#s3:
+#bucket: skklub.test
+#dir: /
+#region:
+#static: ap-northeast-2
+#stack:
+#auto: false
+#jwt:
+#secret:
+#66988d4bfcd57acb1f5af68428fcbc1b5e8ab5a6d549cdb1112b5ae359049cd0b2b360f36b7355a4b76283da89edb4bc5cb19b02ea8e7eeacffd9d4d1973643e
+#redis:
+#pool:
+#min-idle: 0
+#max-idle: 8
+#max-active: 8
+#port: 6379
+#host: 127.0.0.1
