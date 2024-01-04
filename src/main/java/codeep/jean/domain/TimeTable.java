@@ -11,13 +11,13 @@ import org.springframework.lang.Nullable;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TimeTable {
+public class TimeTable extends BaseTimeEntity{
     @Id
     @Column(name = "timetable_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "user_user_id")
+    @JoinColumn(name = "user_id")
     private User user;
     //table property
     private Day day;

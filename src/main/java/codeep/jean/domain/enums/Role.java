@@ -1,5 +1,5 @@
 package codeep.jean.domain.enums;
 
-public enum ROLE {
+public enum Role {
     ROLE_USER,ROLE_ADMIN
 }
