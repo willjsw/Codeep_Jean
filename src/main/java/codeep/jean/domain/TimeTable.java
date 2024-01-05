@@ -1,29 +1,37 @@
 package codeep.jean.domain;
 
-import codeep.jean.domain.enums.Day;
-import codeep.jean.domain.enums.TimeBlockID;
+import codeep.jean.domain.enums.TimeTableBlockID;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TimeTable extends BaseTimeEntity{
     @Id
-    @Column(name = "timetable_id")
+    @Column(name = "time_table_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne(mappedBy = "timeTable")
     private User user;
-    //table property
-    private Day day;
-    private TimeBlockID timeBlockID;
-    //table content
-    @Nullable
-    private String timetableContent;
+    @OneToMany(mappedBy = "timeTable",cascade = CascadeType.ALL, orphanRemoval = true)
+    @MapKey(name = "key")
+    private List<TimeTableBlock> timeTableBlockSet = new ArrayList<>();
+
+    public TimeTable(User user){
+        this.user = user;
+        this.timeTableBlockSet = new ArrayList<>();
+    }
+
+    public void setTimeTableBlock(List<TimeTableBlock> timeTableBlockSet){
+        this.timeTableBlockSet = timeTableBlockSet;
+    }
 
 }

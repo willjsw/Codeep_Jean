@@ -2,7 +2,6 @@ package codeep.jean.controller;
 
 
 import codeep.jean.controller.dtos.*;
-import codeep.jean.domain.Family;
 import codeep.jean.domain.enums.Role;
 import codeep.jean.exception.UserUpdateFailedException;
 import codeep.jean.repository.FamilyRepository;
@@ -63,10 +62,10 @@ public class UserController {
     public ResponseEntity<UserUpdateResponseDTO> update(HttpServletRequest request, @PathVariable Long userId, @ModelAttribute UserUpdateRequestDTO userUpdateRequestDTO){
         authValidator.validateUpdatingUser(userId);
         return userService.updateUser(userId, userUpdateRequestDTO.getPassword(),
-                        role, userUpdateRequestDTO.getName(),
+                        userUpdateRequestDTO.getName(),
                         userUpdateRequestDTO.getContact()
-                        ,request.getHeader(AUTHORIZATION),
-                        userUpdateRequestDTO.getFamilyId())
+                        ,request.getHeader(AUTHORIZATION)
+                      )
                 .map(updatedUser -> new UserUpdateResponseDTO(userId, updatedUser.getUserEmail()))
                 .map(ResponseEntity::ok)
                 .orElseThrow(UserUpdateFailedException::new);

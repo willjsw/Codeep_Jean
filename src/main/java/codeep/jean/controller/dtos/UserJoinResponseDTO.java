@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class UserJoinResponseDTO {
     private Long id;
     private String userEmail;
-    private String familyName;
 
 }

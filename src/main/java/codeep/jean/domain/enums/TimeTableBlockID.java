@@ -1,6 +1,6 @@
 package codeep.jean.domain.enums;
 
-public enum TimeBlockID {
+public enum TimeTableBlockID {
     MON_8A,
     MON_9A,
     MON_10A,

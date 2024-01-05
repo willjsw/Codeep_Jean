@@ -2,10 +2,8 @@ package codeep.jean.service;
 
 import codeep.jean.controller.dtos.UserJoinResponseDTO;
 import codeep.jean.domain.Family;
-import codeep.jean.domain.TimeTable;
 import codeep.jean.domain.User;
 import codeep.jean.domain.enums.Role;
-import codeep.jean.domain.enums.TimeBlockID;
 import codeep.jean.exception.AuthException;
 import codeep.jean.exception.ErrorCode;
 import codeep.jean.repository.FamilyRepository;
@@ -20,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -34,18 +30,18 @@ public class UserService {
     private final FamilyRepository familyRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RedisUtil redisUtil;
+    private final TimeTableService timeTableService;
 
     private BCryptPasswordEncoder encodePwd(){
         return new BCryptPasswordEncoder();
     }
     //User Join
-    public UserJoinResponseDTO joinUser(String userEmail, String password, Role role, String name, String contact,Long familyId){
+    public UserJoinResponseDTO joinUser(String userEmail, String password, Role role, String name, String contact){
         validateUsernameDuplication(userEmail);
-        Family family = Optional.ofNullable(familyRepository.findById(familyId).get())
-                .orElseThrow(()->
-                        new AuthException(ErrorCode.FAMILY_NAME_DUPLICATED, "invalid user account"));
-        User joinedUser = userRepository.save(new User(userEmail, encodePwd().encode(password),role,name,contact,family,new ArrayList<>()));
-        return new UserJoinResponseDTO(joinedUser.getId(), joinedUser.getUserEmail(),joinedUser.getFamily().getFamilyName());
+        User joinedUser = userRepository.save(new User(userEmail, encodePwd().encode(password),role,name,contact));
+        joinedUser.initializeTimeTable(timeTableService.createTimeTable(joinedUser));
+
+        return new UserJoinResponseDTO(joinedUser.getId(), joinedUser.getUserEmail());
     }
 
 
@@ -74,17 +70,14 @@ public class UserService {
     }
 
     //User Update
-    public Optional<User> updateUser(Long userId, String password, Role role, String name, String contact, String accessToken, Long familyId){
+    public Optional<User> updateUser(Long userId, String password, String name, String contact, String accessToken){
         //update 진행
         String username = userRepository.findById(userId).get().getUserEmail();
         String encPwd = bCryptPasswordEncoder.encode(password);
-        Family family = Optional.ofNullable(familyRepository.findById(familyId ).get())
-                .orElseThrow(()->
-                        new AuthException(ErrorCode.USER_NOT_FOUND, "invalid user account"));
 
         return userRepository.findById(userId)
                 .map(baseUser -> {
-                    baseUser.update(new User(username, encPwd, role, name, contact,family,new ArrayList<>()));
+                    baseUser.update(encPwd, name, contact);
                     invalidateUserAccessToken(username, accessToken);
                     log.info("user updated -> userId : {}, username : {}", userId, username);
                     return baseUser;
@@ -107,7 +100,7 @@ public class UserService {
         redisUtil.setBlackList(bannedToken, "AT:" + username, TokenProvider.getExpiration(bannedToken) + (60 * 10 * 1000), TimeUnit.MILLISECONDS);
     }
 
-    public void validateUsernameDuplication(String userEmail) throws AuthException{
+    private void validateUsernameDuplication(String userEmail) throws AuthException{
         Optional.ofNullable(userRepository.findByUserEmail(userEmail))
                 .ifPresent(user->{
                     throw new AuthException(ErrorCode.USERNAME_DUPLICATED, userEmail+" is already exists");

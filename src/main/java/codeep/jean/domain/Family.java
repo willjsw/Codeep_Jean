@@ -14,12 +14,12 @@ public class Family extends BaseEntity{
     @Id @Column(name = "family_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String familyId;
+    private String familyPassword;
     private String familyName;
-    @OneToMany
-    private List<User> familyMembers = new ArrayList<>();
 
-    public Family(String familyName,List<User> familyMembers) {
+    public Family(String familyName, String familyId,String familyPassword) {
         this.familyName=familyName;
-        this.familyMembers=familyMembers;
+        this.familyId=familyPassword;
     }
 }

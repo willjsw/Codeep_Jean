@@ -89,7 +89,7 @@ public class SecurityConfig  {
     private RequestMatcher userEndpoints() {
         return new OrRequestMatcher(
                 //user
-
+                new AntPathRequestMatcher("/mail","POST"),
                 new AntPathRequestMatcher("/user/**","PATCH"), //update
                 new AntPathRequestMatcher("/user/logout","POST") //logout
         );

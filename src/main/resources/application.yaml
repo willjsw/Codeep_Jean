@@ -38,3 +38,16 @@ spring:
         min-idle: 2
     port: 6379
     host: 127.0.0.1
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: sunwoo1137@gmail.com
+    password: vxgarwsiyvrzlpyp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
