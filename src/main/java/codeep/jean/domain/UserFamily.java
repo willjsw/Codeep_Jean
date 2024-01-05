@@ -19,4 +19,9 @@ public class UserFamily {
     @ManyToOne
     @JoinColumn(name = "family_id")
     private Family familyId;
+
+    public UserFamily(User user, Family family){
+        this.userId = user;
+        this.familyId = family;
+    }
 }

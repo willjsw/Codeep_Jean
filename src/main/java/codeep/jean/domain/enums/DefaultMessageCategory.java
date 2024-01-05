@@ -1,4 +1,4 @@
-package codeep.jean.domain;
+package codeep.jean.domain.enums;
 
 public class DefaultMessageCategory {
 

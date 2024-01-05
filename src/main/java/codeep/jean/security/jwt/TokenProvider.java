@@ -21,15 +21,21 @@ import java.util.Date;
 public class TokenProvider {
     private final String secret;
     private static  Key secretKey;
-    //access-token : 30 min
-    public static final int accessTokenExpiredMs = 60 * 30;
-    //refresh-token : 7 days(1 week)
-    public static final int refreshTokenExpiredMs = 60 * 60 * 24 * 7;
+    //access-token
+    private static Integer accessTokenExpiredMs;
+    //refresh-token
+    private static Integer refreshTokenExpiredMs;
 
-    public TokenProvider(@Value("${spring.jwt.secret}") String secret) {
+    public TokenProvider(
+            @Value("${spring.jwt.secret}") String secret,
+            @Value("${spring.jwt.token-expiration.access}") Integer accessTokenExpiredMs,
+            @Value("${spring.jwt.token-expiration.refresh}") Integer refreshTokenExpiredMs
+                         ) {
         this.secret = secret;
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+        this.accessTokenExpiredMs = accessTokenExpiredMs;
+        this.refreshTokenExpiredMs = refreshTokenExpiredMs;
     }
 
     public static JwtDTO createTokens(Long userId, String username, Role role) {
@@ -53,7 +59,7 @@ public class TokenProvider {
                 .setClaims(claims)
                 .setIssuer("SKKU.D")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+accessTokenExpiredMs * 1000))
+                .setExpiration(new Date(System.currentTimeMillis()+accessTokenExpiredMs))
                 .signWith(secretKey, SignatureAlgorithm.HS512)
                 .compact();
     }
@@ -64,7 +70,7 @@ public class TokenProvider {
                 .setSubject("refresh-token")
                 .setIssuer("SKKU.D")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+refreshTokenExpiredMs * 1000))
+                .setExpiration(new Date(System.currentTimeMillis()+refreshTokenExpiredMs))
                 .signWith(secretKey, SignatureAlgorithm.HS512)
                 .compact();
     }

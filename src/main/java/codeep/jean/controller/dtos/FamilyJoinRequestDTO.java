@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FamilyJoinRequestDTO {
     private String familyName;
+    private String familyId;
+    private String familyPassword;
 
 }

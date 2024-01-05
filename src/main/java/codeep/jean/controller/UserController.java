@@ -39,8 +39,7 @@ public class UserController {
                 userJoinRequestDTO.getPassword(),
                 role,
                 userJoinRequestDTO.getName(),
-                userJoinRequestDTO.getContact(),
-                userJoinRequestDTO.getFamilyId());
+                userJoinRequestDTO.getContact());
         return ResponseEntity.ok().body(joinedUser);
     }
 

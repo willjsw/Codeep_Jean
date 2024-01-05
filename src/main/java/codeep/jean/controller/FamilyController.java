@@ -30,7 +30,7 @@ public class FamilyController {
     @PostMapping(value = "/family/join")
     public ResponseEntity<FamilyJoinResponseDTO> familyJoin(@ModelAttribute FamilyJoinRequestDTO familyJoinRequestDTO) {
         log.info("familyName :{}", familyJoinRequestDTO.getFamilyName());
-        FamilyJoinResponseDTO joinedFamily = familyService.joinFamily(familyJoinRequestDTO.getFamilyName());
+        FamilyJoinResponseDTO joinedFamily = familyService.joinFamily(familyJoinRequestDTO.getFamilyName(),familyJoinRequestDTO.getFamilyId(),familyJoinRequestDTO.getFamilyPassword());
         return ResponseEntity.ok().body(joinedFamily);
     }
 
